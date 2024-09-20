@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(TransferApp());
+import 'transactions.dart';
 
 class TransferApp extends StatelessWidget {
   @override
@@ -155,6 +154,16 @@ class _TransferScreenState extends State<TransferScreen> {
             label: 'Profile',
           ),
         ],
+        onTap: (index){
+          switch(index){
+            case 2: //Transactions
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=>TransactionsScreen()),
+                );
+                break;
+          }
+        },
       ),
     );
   }

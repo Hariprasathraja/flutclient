@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'transfer.dart';
+import 'transactions.dart';  // Import the Transactions Screen
 
 void main() => runApp(HomeApp());
 
@@ -111,7 +112,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.0),
+                  SizedBox(height: 20.0),
                   _buildCardWidget(),
                   SizedBox(height: 24.0),
 
@@ -126,17 +127,27 @@ class HomeScreen extends StatelessWidget {
                           fontSize: 16.0,
                         ),
                       ),
-                      Text(
-                        'View all',
-                        style: TextStyle(
-                          color: Colors.blue,
+                      GestureDetector(
+                        onTap: () {
+                          // Navigate to the Transactions Screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => TransactionsScreen()),
+                          );
+                        },
+                        child: Text(
+                          'View all',
+                          style: TextStyle(
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.0),
+                  SizedBox(height: 24.0),
                   _buildTransactionItem('Grocery', '₹400', Icons.shopping_cart),
                   _buildTransactionItem('IESCO Bill', '₹120', Icons.receipt),
+                  _buildTransactionItem('Electricity', '₹580', Icons.electrical_services_sharp)
                 ],
               ),
             ),
@@ -167,6 +178,16 @@ class HomeScreen extends StatelessWidget {
             label: 'Profile',
           ),
         ],
+        onTap: (index){
+          switch (index){
+            case 2: //Transactions
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context)=> TransactionsScreen()),
+                );
+                break;
+          }
+        },
       ),
     );
   }
