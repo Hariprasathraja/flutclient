@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'transfer.dart';
 
 void main() => runApp(HomeApp());
 
@@ -84,9 +85,9 @@ class HomeScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildActionButton(Icons.sync_alt, 'Transfer'),
-                      _buildActionButton(Icons.receipt, 'Bills'),
-                      _buildActionButton(Icons.more_horiz, 'More'),
+                      _buildActionButton(Icons.sync_alt, 'Transfer', context),
+                      _buildActionButton(Icons.receipt, 'Bills', context),
+                      _buildActionButton(Icons.more_horiz, 'More', context),
                     ],
                   ),
                   SizedBox(height: 24.0),
@@ -171,17 +172,28 @@ class HomeScreen extends StatelessWidget {
   }
 
   // Function to build action button
-  Widget _buildActionButton(IconData icon, String label) {
-    return Column(
-      children: [
-        CircleAvatar(
-          backgroundColor: Colors.grey[300],
-          radius: 30.0,
-          child: Icon(icon, size: 30.0, color: Colors.black),
-        ),
-        SizedBox(height: 8.0),
-        Text(label),
-      ],
+  Widget _buildActionButton(IconData icon, String label, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (label == 'Transfer') {
+          // Navigate to the TransferScreen when 'Transfer' button is tapped
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TransferScreen()),
+          );
+        }
+      },
+      child: Column(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.grey[300],
+            radius: 30.0,
+            child: Icon(icon, size: 30.0, color: Colors.black),
+          ),
+          SizedBox(height: 8.0),
+          Text(label),
+        ],
+      ),
     );
   }
 
