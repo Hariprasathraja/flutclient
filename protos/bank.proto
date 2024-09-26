@@ -1,0 +1,107 @@
+syntax="proto3";
+
+package com.demo.app;
+
+//Account Details
+message AccountDetails{
+  int32 accountNumber=1;
+  string name=2;
+  float balance=3;
+}
+
+//Transaction Details
+message TransactionDetails{
+  int32 transactionId=1;
+  int32 accountNumber=2;
+  string type=3;
+  float amount=4;
+  string timeStamp=5;
+}
+
+//Get Account
+message AccountRequest{
+  int32 accountNumber=1;
+}
+
+//Create Account
+message CreateAccountRequest{
+  string name=1;
+  float initial_balance=2;
+}
+message CreateAccountResponse{
+  bool success=1;
+}
+
+//Update Account
+message UpdateAccountRequest{
+  int32 accountNumber=1;
+  string name=2;
+  float balance=3;
+}
+message UpdateAccountResponse{
+  bool success=1;
+  string previousName=2;
+}
+
+//Delete Account
+message DeleteAccountRequest{
+  int32 accountNumber=1;
+}
+message DeleteAccountResponse{
+  bool success=1;
+  string message=2;
+}
+
+//Deposit Amount
+message DepositAmountRequest{
+  int32 accountNumber=1;
+  float depositAmount=2;
+}
+message DepositAmountResponse{
+  bool success=1;
+  string message=2;
+  float balance=3;
+}
+
+//Deposit WithDraw
+message WithDrawAmountRequest{
+  int32 accountNumber=1;
+  float withDrawAmount=2;
+}
+message WithDrawAmountResponse{
+  bool success=1;
+  string message=2;
+  float balance=3;
+}
+
+//Transfer Amount
+message TransferAmountRequest{
+  int32 fromAccount=1;
+  int32 toAccount=2;
+  float transferAmount=3;
+}
+message TransferAmountResponse{
+  bool success=1;
+  string message=2;
+  float balance=3;
+}
+
+//Transaction History
+message TransactionHistoryRequest{
+  int32 accountNumber=1;
+}
+message TransactionHistoryResponse{
+  repeated TransactionDetails transactions=1;
+}
+
+
+service AccountService{
+  rpc GetAccountDetails(AccountRequest) returns (AccountDetails);
+  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);
+  rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountResponse);
+  rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse);
+  rpc DepositAmount(DepositAmountRequest) returns (DepositAmountResponse);
+  rpc WithDrawAmount(WithDrawAmountRequest) returns (WithDrawAmountResponse);
+  rpc TransferAmount(TransferAmountRequest) returns (TransferAmountResponse);
+  rpc GetTransactionHistory(TransactionHistoryRequest) returns (TransactionHistoryResponse);
+}
