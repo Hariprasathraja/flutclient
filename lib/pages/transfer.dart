@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'transactions.dart';
+import 'package:flutclient/generated/bank.pb.dart';
+import 'package:flutclient/generated/bank.pbgrpc.dart';
+import 'package:grpc/grpc.dart';
 
 class TransferApp extends StatelessWidget {
   @override
@@ -19,6 +23,21 @@ class TransferScreen extends StatefulWidget {
 class _TransferScreenState extends State<TransferScreen> {
   String _selectedPurpose = 'Education';
   List<String> _purposes = ['Education', 'Food', 'Rent', 'Shopping'];
+  String recipient='Hari';
+  TextEditingController amountController=TextEditingController();
+  late AccountServiceClient accountServiceClient;
+
+  @override
+  void initState(){
+    super.initState();
+
+    final channel=ClientChannel(
+      'localhost',
+      port:50051,
+      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+    );
+    accountServiceClient=AccountServiceClient(channel);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +106,8 @@ class _TransferScreenState extends State<TransferScreen> {
 
             // Amount input
             TextField(
-              keyboardType: TextInputType.number,
+              controller: amountController,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
                 labelText: 'Amount',
                 prefixText: '₹',
@@ -117,7 +137,43 @@ class _TransferScreenState extends State<TransferScreen> {
 
             // Send button
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () async{
+                try{
+                  String input=amountController.text.replaceAll(RegExp('₹'),'');
+                
+                  if (input.isEmpty || double.tryParse(input) == null) {
+                    throw FormatException("Invalid input");
+                  }
+                  double amount=double.parse(input);
+
+                  final request=TransferAmountRequest(
+                    fromAccount: 1,
+                    toAccount: 2,
+                    transferAmount: amount,
+                  );
+                  try{
+                    final response=await accountServiceClient.transferAmount(request);
+
+                    if (response.success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Transfer Successful!")),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Transfer Failed: ${response.message}")),
+                      );
+                    }
+                  }catch(e){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Transfer Error: $e")),
+                    );
+                  }
+                }catch(e){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Invalid amount"))
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 100.0, vertical: 16.0),
                 backgroundColor: Color(0xFF044D4F),
